@@ -20,7 +20,11 @@ Word::Word(string pageWord, Document* doc)
 }
 Word::~Word()
 {
-
+    for(int i = 0; i < docs.size(); i++)
+    {
+        delete docs[i];
+    }
+    docs.clear();
 }
 
 void Word::addDocument(Document*& doc) {

@@ -23,10 +23,11 @@ using namespace rapidxml;
 using namespace std;
 
 
-// Parser::Parser()
-// {
-//
-// }
+Parser::~Parser()
+{
+    delete docObj;
+    delete wordObj;
+}
 
 void Parser::parse(string fileName)
 {

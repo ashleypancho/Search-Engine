@@ -39,6 +39,7 @@ private:
 
 public:
 //    Parser();
+    ~Parser();
     void makeStopWords();                   //make stop word vector
     // vector<string> removeExtraCharacters(vector<string>&);             //remove spaces, puctuation...
     void parse(string fileName);
