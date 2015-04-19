@@ -12,7 +12,7 @@
 
 //#include "Index.h"
 //#include "AvlTree.h"
-//#include "porter2_stemmer.h"
+#include "porter2_stemmer.h"
 #include "Word.h"
 #include "Document.h"
 
@@ -96,6 +96,7 @@ void Parser::parse(string fileName)
 
             bufferString = cNode->value();
             documentVectTemp.push_back(bufferString);                 //add the text
+//            documentVectTemp = removeExtraCharacters(documentVectTemp);
             cNode = cNode->next_sibling("sha1");
             cNode = cNode->next_sibling("model");
             cNode = cNode->next_sibling("format");
@@ -118,6 +119,7 @@ void Parser::parse(string fileName)
 //            }
            for(int k = 0; k < textHolder.size(); k++)
            {
+               Porter2Stemmer::stem(textHolder[k]);
                Word* wordObj = new Word(textHolder[k],docObj);
                if(k%10000 == 0) {
                    wordObj->print();
@@ -159,27 +161,27 @@ vector<string> Parser::split(string& str, char sep = ' ' )
     return ret;
 }
 
-// void Parser::makeStopWords()
-// {
-//     fstream stopFile("stopWords.txt");
-//     string stopTemp;
-//     while(!stopFile.eof())          //read in the stop words
-//     {
-//         stopFile >> stopTemp;
-//         stopWords.push_back(stopTemp);
-//     }
-//
-//     stopWords = removeExtraCharacters(stopWords);           //remove non-characters from stop
-//
-//     for(int k = 0; k < stopWords.size(); k++)
-//     {
-//         Porter2Stemmer::stem(stopWords[k]);                 //stems the stopwords
-//     }
-//     for(int k = 0; k < stopWords.size(); k++)
-//     {
-//         cout << stopWords[k] << endl;
-//     }
-// }
+void Parser::makeStopWords()
+{
+    fstream stopFile("stopWords.txt");
+    string stopTemp;
+    while(!stopFile.eof())          //read in the stop words
+    {
+        stopFile >> stopTemp;
+        stopWords.push_back(stopTemp);
+    }
+
+//    stopWords = removeExtraCharacters(stopWords);           //remove non-characters from stop
+
+    for(int k = 0; k < stopWords.size(); k++)
+    {
+        Porter2Stemmer::stem(stopWords[k]);                 //stems the stopwords
+    }
+    for(int k = 0; k < stopWords.size(); k++)
+    {
+        cout << stopWords[k] << endl;
+    }
+}
 
 // vector<string> Parser::removeExtraCharacters(vector<string> &wordList)
 // {
@@ -187,9 +189,13 @@ vector<string> Parser::split(string& str, char sep = ' ' )
 //     for(int k = 0; k < wordList.size(); k++)
 //     {
 //         s = wordList[k];
-//         s.erase(remove_if(s.begin(),s.end(),[](const char c)
-//                 {return !isalpha(c) && !isdigit((int)c);}),s.end());    //removes other characters
+//         s.erase(remove_if(s.begin(),s.end(),isExtraCharacter()),s.end());    //removes other characters
 //         wordList[k] = s;
 //     }
 //     return wordList;
+// }
+//
+// bool Parser::isExtraCharacter(const char c)
+// {
+//     return !isalpha(c) && !isdigit((int)c);
 // }

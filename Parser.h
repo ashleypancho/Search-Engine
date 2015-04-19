@@ -39,7 +39,7 @@ private:
 
 public:
 //    Parser();
-   // void makeStopWords();                   //make stop word vector
+    void makeStopWords();                   //make stop word vector
     // vector<string> removeExtraCharacters(vector<string>&);             //remove spaces, puctuation...
     void parse(string fileName);
     // void stemWords();
@@ -51,7 +51,7 @@ public:
     //      vector<string> createSplitVector(string);
          vector<string> split(string& str, char sep);
     //      vector<string> sStreamText(string);
-
+    // bool Parser::isExtraCharacter(const char c);
 
 
 
