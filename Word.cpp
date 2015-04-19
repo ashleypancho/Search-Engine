@@ -13,19 +13,41 @@
 
 //}
 
-Word::Word(string& pageWord, Document*& doc)
+Word::Word(string pageWord, Document* doc)
 {
     theWord = pageWord;
     addDocument(doc);
 }
+Word::~Word()
+{
+
+}
 
 void Word::addDocument(Document*& doc) {
     docs.push_back(doc);
-    occurrences.push_back(doc.getFrequency());
+    occurrences.push_back(doc->search(theWord));
 }
 
 
-bool Word::operator==(const Word& w, const Word &w2)
+bool Word::operator==(const Word& w)
 {
-    return w.theWord.compare(s2) == 0;
+    return theWord == w.theWord;
+}
+
+// ostream& operator<<(ostream& output, const Word& w)
+// {
+//     output << "Word: " << w.theWord << endl;
+//     for(int i = 0; i < 5; i++) {
+//         output << *w.docs[i] << endl;
+//     }
+//     return output;
+// }
+
+void Word::print()
+{
+    cout << "Word: " << theWord << endl;
+    for(int i = 0; i < 5; i++) {
+//        cout << "hi" << endl;
+        cout << *docs[i] << endl;
+    }
 }

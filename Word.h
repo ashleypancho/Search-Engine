@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
 
 #include "Document.h"
 
@@ -16,9 +17,12 @@ private:
     vector<int> occurrences;
 public:
 //    Word();
-    Word(string&, Document*&);
+    Word(string, Document*);
+    ~Word();
     void addDocument(Document*&);
-    bool operator==(const Word& w, const Word &w2);
+    bool operator==(const Word& w);
+    void print();
+    // friend ostream& operator<<(ostream& output, const Word& w);
 };
 
 #endif // WORD_H

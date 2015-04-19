@@ -1,33 +1,27 @@
 #include "Document.h"
+#include <iostream>
 
-Document::Document()
-{
-
-}
+// Document::Document()
+// {
+//
+// }
 
 Document::Document(vector<string>& singleDoc)
 {
-    if(singleDoc.size() == 5)
+    if(singleDoc.size() == 2)
     {
-        docTitle = singleDoc[0];
-        pageNumber = stoi(singleDoc[1],nullptr,10);
-        text = singleDoc[4];
+        pageNumber = stoi(singleDoc[0],nullptr,10);
+        text = singleDoc[2];
     }
-    else if(singleDoc.size() == 6)
-    {
-        docTitle = singleDoc[0];
-        pageNumber = stoi(singleDoc[1],nullptr,10);
-        text = singleDoc[5];
-    }
-
 }
 
-int getFrequency()
+Document::~Document()
 {
-    return frequency;
+
 }
 
 int Document::search(string word){
+    int frequency;
     size_t found = text.find(word);
     while(found != string::npos) {
         frequency++;
@@ -36,8 +30,17 @@ int Document::search(string word){
     return frequency;
 }
 
+int Document::getPageNumber() const {
+    return pageNumber;
+}
+
+string Document::getText() const {
+    return text;
+}
+
 ostream& operator<<(ostream& output, const Document& d)
 {
-    output << d.text << endl;
+    output << "Page: " << d.getPageNumber() << endl;
+    output << d.getText() << endl;
     return output;
 }
