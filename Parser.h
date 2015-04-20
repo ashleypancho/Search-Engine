@@ -175,12 +175,13 @@ public:
     //
     //      void sendDocsToDocClass();      //send the document vector elements to doc class
     //      vector<string> createSplitVector(string);
-         vector<string> split(string& str, char sep);
+    void split(string& str, char sep);
     //      vector<string> sStreamText(string);
     void removeStop(vector<string> wordList);
     void removeSpace(vector<string> &fullDoc, vector<string> &noPunc);
     bool isAllAlpha(string word);
     bool isStop(string str);
+    void processText(string &word);
 };
 
 #endif // PARSER_H
