@@ -24,8 +24,8 @@ int main()
     //fileName = "enwikibooks-20131101-pages-meta-current.xml";
     //fileName = "WikiDumpPart1.xml";
     Parser par;//= new Parser();
+    //par.makeStopWords();
     par.parse(fileName);
-    // par -> makeStopWords();
     // par -> stemWords();
 
 

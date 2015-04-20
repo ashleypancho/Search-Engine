@@ -10,15 +10,15 @@ Document::Document(vector<string>& singleDoc)
 {
     if(singleDoc.size() == 2)
     {
-        pageNumber = stoi(singleDoc[0],nullptr,10);
+        pageNumber = singleDoc[0];
         text = singleDoc[2];
     }
 }
 
-Document::~Document()
-{
-
-}
+// Document::~Document()
+// {
+//
+// }
 
 int Document::search(string word){
     int frequency;
@@ -30,7 +30,7 @@ int Document::search(string word){
     return frequency;
 }
 
-int Document::getPageNumber() const {
+string Document::getPageNumber() const {
     return pageNumber;
 }
 

@@ -11,15 +11,15 @@ class Document
 {
 private:
     string docTitle;
-    int pageNumber;
+    string pageNumber;
     string text;
 
 public:
     //Document();
     Document(vector<string>&);
-    ~Document();
+    // ~Document();
     int search(string word);
-    int getPageNumber() const;
+    string getPageNumber() const;
     string getText() const;
     friend ostream& operator<<(ostream& output, const Document& d);
 };

@@ -11,7 +11,7 @@
 #include <sstream>
 
 //#include "Index.h"
-//#include "AvlTree.h"
+#include "AvlTree.h"
 #include "porter2_stemmer.h"
 #include "Word.h"
 #include "Document.h"
@@ -22,17 +22,17 @@
 using namespace rapidxml;
 using namespace std;
 
-
-Parser::~Parser()
-{
-    delete docObj;
-    delete wordObj;
-}
+// Parser::~Parser()
+// {
+//     delete docObj;
+//     delete wordObj;
+// }
 
 void Parser::parse(string fileName)
 {
-    clock_t start;
-    double duration;
+    clock_t origStart, start;
+    double duration, parsing, inserting, clearing, stopTime, stemmer, cleaner;
+    origStart = clock();
     start = clock();
 
     vector<string> documentVectTemp;
@@ -40,15 +40,13 @@ void Parser::parse(string fileName)
 
     vector<string> textHolder;
 
-    //ifstream myfile("enwikibooks-20140502-pages-meta-current.xml");    //http://stackoverflow.com/questions/2808022/how-to-parse-the-xml-file-in-rapidxml
-    ifstream myfile("WikiDumpPart1.xml");
+    ifstream myfile("enwikibooks-20140502-pages-meta-current.xml");
+    //ifstream myfile("WikiDumpPart1.xml");
+    ofstream out("output.txt");
+
+    //http://stackoverflow.com/questions/2808022/how-to-parse-the-xml-file-in-rapidxml
     xml_document<> doc;
-
-    xml_node<> *root_node;
-    //doc.parse<0>(WikiDump.data());
-    //get root node
-
-
+    xml_node<> *root_node;    //get root node
     /* "Read file into vector<char>"  See linked thread above*/
     vector<char> buffer((istreambuf_iterator<char>(myfile)), istreambuf_iterator<char>( ));
 
@@ -73,8 +71,6 @@ void Parser::parse(string fileName)
             cNode = cNode->first_node("id");
             if(cNode->next_sibling("parentid"))
                 cNode = cNode->next_sibling("parentid");
-            else if(!cNode->next_sibling("parentid"))
-                ;//    skipBadNode();
             cNode = cNode->next_sibling("timestamp");
             cNode = cNode->next_sibling("contributor");
 
@@ -90,14 +86,10 @@ void Parser::parse(string fileName)
             cNode = cNode->parent();
             if(cNode->next_sibling("comment"))
                 cNode = cNode->next_sibling("comment");
-            else if(!cNode->next_sibling("comment"))
-                ;//    skipBadNode();
             cNode = cNode->next_sibling("text");
-//            cout << "Text of my first node is: " << cNode->value() << "\n";  /*test the xml_document */
-
             bufferString = cNode->value();
             documentVectTemp.push_back(bufferString);                 //add the text
-//            documentVectTemp = removeExtraCharacters(documentVectTemp);
+//           documentVectTemp = removeExtraCharacters(documentVectTemp);
             cNode = cNode->next_sibling("sha1");
             cNode = cNode->next_sibling("model");
             cNode = cNode->next_sibling("format");
@@ -108,46 +100,49 @@ void Parser::parse(string fileName)
 //
             //loop through the bufferString of text. parse each word. add to index
             //Word pointer
-//            textHolder = createSplitVector(bufferString);
             textHolder = split(bufferString,' ');
-
-
-//            for(int k = 0; k < bufferString.size(); k++)
-//            {
-            //textHolder = createSplitVector(bufferString);
-
-            //                textHolder = bufferString
-//            }
+            parsing = (clock() - start) / (double) CLOCKS_PER_SEC;
+            start = clock();
+           cout << "parsing: " << parsing << endl;
+            // removeSpace(textHolder,cleanTextHolder);
+            cleaner = (clock() - start) / (double) CLOCKS_PER_SEC;
+            start = clock();
+           cout << "cleaner: " << cleaner << endl;
+            // removeStop(textHolder,cleanTextHolder,noStopText);
+            stopTime = (clock() - start) / (double) CLOCKS_PER_SEC;
+            start = clock();
+           cout << "stopTime: " << stopTime << endl;
            for(int k = 0; k < textHolder.size(); k++)
            {
-               Porter2Stemmer::stem(textHolder[k]);
-               Word* wordObj = new Word(textHolder[k],docObj);
-               if(k%10000 == 0) {
-                   wordObj->print();
-                   cout << endl;
-               }
-            //    indObj->insert(wordObj);
+            //    Porter2Stemmer::stem(noStopText[k]);
+               stemmer = (clock() - start) / (double) CLOCKS_PER_SEC;
+               start = clock();
+              out << "stemmer: " << stemmer << endl;
+
+            //    Word* wordObj = new Word(noStopText[k],docObj);
+            //    if(k%10000 == 0) {
+            //        wordObj->print();
+            //        cout << endl;
+            //    }
+            //   indObj->insert(noStopText[k]);
+                cout << "word inserted: " << textHolder[k] << endl;
+                hashObj[textHolder[k]].push_back(docObj);
+                // cout << hashObj[noStopText[k]];
+               inserting = (clock() - start) / (double) CLOCKS_PER_SEC;
+               start = clock();
+              cout << "inserting: " << inserting << endl;
            }
 
-            textHolder = split(bufferString,' ');
-            if(textHolder.empty())
-                ;
-            else
-            {
-                for(int k = 0; k < textHolder.size(); k++)
-                {
-                   Word* wordObj = new Word(textHolder[k],docObj);
-                        //    indObj->insert(wordObj);
-                }
-            }
-//
             documentVectTemp.clear();
             textHolder.clear();
-//             //cout << counter << endl;
-//             counter++;
+            cleanTextHolder.clear();
+            noStopText.clear();
+            clearing = (clock() - start) / (double) CLOCKS_PER_SEC;
+            cout << "clearing: " << clearing << endl;
         }
-        duration = (clock() - start) / (double) CLOCKS_PER_SEC;
-        cout << "timer:" << duration << endl;
+        duration = (clock() - origStart) / (double) CLOCKS_PER_SEC;
+        cout << "timer:" << duration << " seconds" << endl;
+        // indObj->print();
 }
 
 // split via http://www.cplusplus.com/forum/general/125094/
@@ -178,25 +173,43 @@ void Parser::makeStopWords()
     {
         Porter2Stemmer::stem(stopWords[k]);                 //stems the stopwords
     }
-    for(int k = 0; k < stopWords.size(); k++)
+}
+
+vector<string> Parser::removeExtraCharacters(vector<string> &wordList)
+{
+    string s;
+    for(int k = 0; k < wordList.size(); k++)
     {
-        cout << stopWords[k] << endl;
+        s = wordList[k];
+        s.erase(std::remove_if(s.begin(), s.end(), [](const unsigned &c){ return !isalpha(c);}), s.end());    //removes other characters
+        wordList[k] = s;
+    }
+    return wordList;
+}
+
+void Parser::removeStop(vector<string> &stopWords, vector<string> &noPunct, vector<string> &noStop) {
+    for (int i = 0; i < noPunct.size(); i++) {
+        string word = noPunct[i];
+        int count = 0;
+        for (int m = 0; m < stopWords.size(); m++) {
+            string stop = stopWords[m];
+            if (word == stop)
+                count++;
+        }
+        if (count == 0) {
+            noStop.push_back(word);
+        }
     }
 }
 
-// vector<string> Parser::removeExtraCharacters(vector<string> &wordList)
-// {
-//     string s;
-//     for(int k = 0; k < wordList.size(); k++)
-//     {
-//         s = wordList[k];
-//         s.erase(remove_if(s.begin(),s.end(),isExtraCharacter()),s.end());    //removes other characters
-//         wordList[k] = s;
-//     }
-//     return wordList;
-// }
-//
-// bool Parser::isExtraCharacter(const char c)
-// {
-//     return !isalpha(c) && !isdigit((int)c);
-// }
+void Parser::removeSpace(vector<string> &fullDoc, vector<string> &noPunc) {
+    for (int i = 0; i < fullDoc.size(); i++) {
+        string line = fullDoc[i];
+        stringstream lineStream(line);
+        string word;
+        while (1) {
+            if (!(lineStream >> word)) break;
+            noPunc.push_back(word);
+        }
+    }
+}

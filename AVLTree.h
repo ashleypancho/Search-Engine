@@ -8,7 +8,7 @@ public:
     AVLTree();
 
     int height(AVLNode *t);
-    void insert(string val)
+    void insert(string &val)
     {
         insert(val, root);
     }
@@ -22,7 +22,7 @@ private:
     void rotateWithRC(AVLNode* &k2);
     void doubleWithLC(AVLNode* &k3);
     void doubleWithRC(AVLNode* &k3);
-    void insert(string x, AVLNode* &t);
+    void insert(string &x, AVLNode* &t);
 };
 
 #endif // AVLTREE_H

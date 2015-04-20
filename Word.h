@@ -18,7 +18,7 @@ private:
 public:
 //    Word();
     Word(string, Document*);
-    ~Word();
+    // ~Word();
     void addDocument(Document*&);
     bool operator==(const Word& w);
     void print();

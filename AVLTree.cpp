@@ -6,7 +6,7 @@ AVLTree::AVLTree()
     root = nullptr;
 }
 
-void AVLTree::insert(string x, AVLNode *&t)
+void AVLTree::insert(string &x, AVLNode *&t)
 {
     if(t==nullptr)
         t = new AVLNode(x, nullptr, nullptr);
@@ -16,7 +16,7 @@ void AVLTree::insert(string x, AVLNode *&t)
         if(height(t->left)-height(t->right)==2)
             if(x < t ->left->SampleData)//case I
                 rotateWithLC(t);
-        else//case II
+            else//case II
                 doubleWithLC(t);
     }
     else if(t->SampleData < x)
@@ -73,7 +73,7 @@ void AVLTree::doubleWithRC(AVLNode *&k3)
 
 void AVLTree::inorder(AVLNode *t)
 {
-    if (t == nullptr)
+        if (t == nullptr)
             return;
         inorder(t->left);
         cout<<t->SampleData<<"  ";
@@ -82,5 +82,6 @@ void AVLTree::inorder(AVLNode *t)
 
 void AVLTree::print()
 {
-    inorder(root);
+    cout << "root: " << root->SampleData << endl;
+    cout << "root->left: " << root->left->SampleData << endl;
 }

@@ -18,14 +18,15 @@ Word::Word(string pageWord, Document* doc)
     theWord = pageWord;
     addDocument(doc);
 }
-Word::~Word()
-{
-    for(int i = 0; i < docs.size(); i++)
-    {
-        delete docs[i];
-    }
-    docs.clear();
-}
+
+// Word::~Word()
+// {
+//     for(int i = 0; i < docs.size(); i++)
+//     {
+//         delete docs[i];
+//     }
+//     docs.clear();
+// }
 
 void Word::addDocument(Document*& doc) {
     docs.push_back(doc);
@@ -52,6 +53,6 @@ void Word::print()
     cout << "Word: " << theWord << endl;
     for(int i = 0; i < 5; i++) {
 //        cout << "hi" << endl;
-        cout << *docs[i] << endl;
+        cout << docs[i] << endl;
     }
 }
