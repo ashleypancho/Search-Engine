@@ -30,36 +30,156 @@ private:
     string timeStamp;
     string textToken;
     int pageIDNumber;
-    unordered_map<string, vector<Document*>> hashObj;
-    vector<string> stopWords = {"a","about","above","after","again","against","all","am","an","and","any","are","aren't","as","at","be","because","been","before","being","below","between","both","but","by","can't","cannot","could","couldn't","did","didn't","do","does","doesn't","doing","don't","down","during","each","few","for","from","further","had","hadn't","has","hasn't","have","haven't","having","he","he'd","he'll","he's","her","here","here's","hers","herself","him","himself","his","how","how's",
-    "i","i'd","i'll","i'm","i've","if","in","into","is","isn't","it","it's","its","itself","let's","me","more","most","mustn't","my","myself","no","nor","not","of","off","on","once","only","or","other","ought","our","ours","ourselves","out","over","own","same","shan't","she","she'd","she'll","she's","should","shouldn't","so","some","such","than","that","that's","the","their","theirs","them","themselves","then","there",
-    "there's","these","they","they'd","they'll","they're","they've","this","those","through","to","too","under","until","up","very","was","wasn't","we","we'd","we'll","we're","we've","were","weren't","what","what's","when","when's","where","where's","which","while","who","who's","whom","why","why's","with","won't","would","wouldn't","you","you'd","you'll","you're","you've","your","yours","yourself","yourselves"};               //move to the .h file so it is in whole class
+    unordered_map<string, vector<string>> hashObj;
+    unordered_map<string, string> stopWords = {{"a","a"},
+        {"about","about"},
+        {"above","above"},
+        {"after","after"},
+        {"again","again"},
+        {"against","against"},
+        {"all","all"},
+        {"am","am"},
+        {"an","an"},
+        {"and","and"},
+        {"any","any"},
+        {"are","are"},
+        {"as","as"},
+        {"at","at"},
+        {"be","be"},
+        {"because","because"},
+        {"been","been"},
+        {"before","before"},
+        {"being","being"},
+        {"below","below"},
+        {"between","between"},
+        {"both","both"},
+        {"but","but"},
+        {"by","by"},
+        {"cannot","cannot"},
+        {"could","could"},
+        {"did","did"},
+        {"do","do"},
+        {"does","does"},
+        {"doing","doing"},
+        {"down","down"},
+        {"during","during"},
+        {"each","each"},
+        {"few","few"},
+        {"for","for"},
+        {"from","from"},
+        {"further","further"},
+        {"had","had"},
+        {"has","has"},
+        {"have","have"},
+        {"having","having"},
+        {"he","he"},
+        {"her","her"},
+        {"here","here"},
+        {"hers","hers"},
+        {"herself","herself"},
+        {"him","him"},
+        {"himself","himself"},
+        {"his","his"},
+        {"how","how"},
+        {"i","i"},
+        {"if","if"},
+        {"in","in"},
+        {"into","into"},
+        {"is","is"},
+        {"it","it"},
+        {"its","its"},
+        {"itself","itself"},
+        {"let's","let's"},
+        {"me","me"},
+        {"more","more"},
+        {"most","most"},
+        {"my","my"},
+        {"myself","myself"},
+        {"no","no"},
+        {"nor","nor"},
+        {"not","not"},
+        {"of","of"},
+        {"off","off"},
+        {"on","on"},
+        {"once","once"},
+        {"only","only"},
+        {"or","or"},
+        {"other","other"},
+        {"ought","ought"},
+        {"our","our"},
+        {"ours","ours"},
+        {"ourselves","ourselves"},
+        {"out","out"},
+        {"over","over"},
+        {"own","own"},
+        {"same","same"},
+        {"she","she"},
+        {"should","should"},
+        {"so","so"},
+        {"some","some"},
+        {"such","such"},
+        {"than","than"},
+        {"that","that"},
+        {"the","the"},
+        {"their","their"},
+        {"theirs","theirs"},
+        {"them","them"},
+        {"themselves","themselves"},
+        {"then","then"},
+        {"there","there"},
+        {"these","these"},
+        {"they","they"},
+        {"this","this"},
+        {"those","those"},
+        {"through","through"},
+        {"to","to"},
+        {"too","too"},
+        {"under","under"},
+        {"until","until"},
+        {"up","up"},
+        {"very","very"},
+        {"was","was"},
+        {"we","we"},
+        {"were","were"},
+        {"what","what"},
+        {"when","when"},
+        {"where","where"},
+        {"which","which"},
+        {"while","while"},
+        {"who","who"},
+        {"whom","whom"},
+        {"why","why"},
+        {"with","with"},
+        {"would","would"},
+        {"you","you"},
+        {"your","your"},
+        {"yours","yours"},
+        {"yourself","yourself"},
+        {"yourselves","yourselves"}};
     vector<string> textHolder;              //hold the split text from the file
-    vector<string> cleanTextHolder;         //textHolder with removed spaces and stuff
-    vector<string> noStopText;              //completely free of stop words
     vector<Word*> wordVect;
     Document* docObj;
     Word* wordObj;
     AVLTree* indObj;
+    string text;
+    string id;
 
 public:
 //    Parser();
     // ~Parser();
-    void makeStopWords();                   //make stop word vector
     vector<string> removeExtraCharacters(vector<string>&);             //remove spaces, puctuation...
     void parse(string fileName);
     // void stemWords();
     // void sendToIndex();
-    // void skipBadNode();             //used to 'skip' a node if it is missing in a doc
     //
     //
     //      void sendDocsToDocClass();      //send the document vector elements to doc class
     //      vector<string> createSplitVector(string);
          vector<string> split(string& str, char sep);
     //      vector<string> sStreamText(string);
-    void removeStop(vector<string> &stopWords, vector<string> &noPunct, vector<string> &noStop);
+    void removeStop(vector<string> wordList);
     void removeSpace(vector<string> &fullDoc, vector<string> &noPunc);
-
+    bool isAllAlpha(string word);
 };
 
 #endif // PARSER_H
