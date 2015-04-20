@@ -162,11 +162,12 @@ vector<string> Parser::split(string& str, char sep = ' ' )
     return ret;
 }
 
-processText(string text) {
-    if(!isStop(word) && !isAllAlpha(word){
-
-    }
-}
+// DOES NOT CURRENTLY WORK
+// processText(string text) {
+//     if(!isStop(word) && !isAllAlpha(word){
+//
+//     }
+// }
 
 vector<string> Parser::removeExtraCharacters(vector<string> &wordList)
 {
@@ -190,6 +191,12 @@ static inline bool is_not_alphanum_lower(char c)
 bool Parser::isAllAlpha(string str)
 {
     return find_if(str.begin(), str.end(), is_not_alphanum_lower) == str.end();
+}
+
+bool Parser::isStop(string str)
+{
+    auto search = stopWords.find(str);
+    return search == stopWords.end();
 }
 
 void Parser::removeStop(vector<string> wordList) {

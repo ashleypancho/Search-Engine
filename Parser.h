@@ -180,6 +180,7 @@ public:
     void removeStop(vector<string> wordList);
     void removeSpace(vector<string> &fullDoc, vector<string> &noPunc);
     bool isAllAlpha(string word);
+    bool isStop(string str);
 };
 
 #endif // PARSER_H
