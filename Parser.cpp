@@ -43,7 +43,7 @@ void Parser::parse(string fileName)
     //ifstream myfile("enwikibooks-20140502-pages-meta-current.xml");
     ifstream myfile("WikiDumpPart1.xml");
     //ofstream out("output.txt");
-    //file<> myfile("WikiDumpPart1.xml");
+
     //http://stackoverflow.com/questions/2808022/how-to-parse-the-xml-file-in-rapidxml
     xml_document<> doc;
     xml_node<> *root_node;    //get root node
@@ -101,7 +101,7 @@ void Parser::parse(string fileName)
 //
             //loop through the bufferString of text. parse each word. add to index
             //Word pointer
-            split(bufferString,' ');
+            textHolder = split(bufferString,' ');
             parsing = (clock() - start) / (double) CLOCKS_PER_SEC;
             start = clock();
            cout << "parsing: " << parsing << endl;
@@ -124,18 +124,18 @@ void Parser::parse(string fileName)
             //    }
             //   indObj->insert(noStopText[k]);
 
-                // if(isAllAlpha(textHolder[k]))
-                // {
-                //     Porter2Stemmer::stem(textHolder[k]);
-                //    stemmer = (clock() - start) / (double) CLOCKS_PER_SEC;
-                //    start = clock();
-                //    //out << textHolder[k]<< endl;
-                //     cout << "word inserted: " << textHolder[k] << endl;
-                //     hashObj[textHolder[k]].push_back(id);
-                //     inserting = (clock() - start) / (double) CLOCKS_PER_SEC;
-                //     start = clock();
-                //    cout << "inserting: " << inserting << endl;
-                // }
+                if(isAllAlpha(textHolder[k]))
+                {
+                    Porter2Stemmer::stem(textHolder[k]);
+                   stemmer = (clock() - start) / (double) CLOCKS_PER_SEC;
+                   start = clock();
+                   //out << textHolder[k]<< endl;
+                    cout << "word inserted: " << textHolder[k] << endl;
+                    // hashObj[textHolder[k]].push_back(id);
+                    inserting = (clock() - start) / (double) CLOCKS_PER_SEC;
+                    start = clock();
+                   cout << "inserting: " << inserting << endl;
+                }
                 // cout << hashObj[noStopText[k]];
            }
 
@@ -147,29 +147,30 @@ void Parser::parse(string fileName)
         duration = (clock() - origStart) / (double) CLOCKS_PER_SEC;
         cout << "timer:" << duration << " seconds" << endl;
         // indObj->print();
-        cout << hashObj["light"].at(0) << endl;
-        cout << hashObj["light"].at(1) << endl;
+        cout << "the first page \"light\" is on is page: " << hashObj["light"].at(0) << endl;
+        cout << "the first page \"second\" is on is page: " << hashObj["second"].at(0) << endl;
+
+        // for(auto i : hashObj) {
+        //     cout << i.first << ": ";
+        //     for(int j = 0; j < (i.second).size(); j++) {
+        //         cout << (i.second).at(j);
+        //         if(j != ((i.second).size() -1))
+        //             cout << ", ";
+        //     }
+        //     cout << endl;
+        // }
 }
 
 // split via http://www.cplusplus.com/forum/general/125094/
-void Parser::split(string& str, char sep = ' ' )
+vector<string> Parser::split(string& str, char sep = ' ' )
 {
+    vector<string> ret;
+
     istringstream stm(str);
     string token;
-    while(getline(stm, token, sep))
-    {
-        processText(token);
-    }
-}
+    while(getline(stm, token, sep)) ret.push_back(token);
 
-//DOES NOT CURRENTLY WORK
-void Parser::processText(string &word) {
-    if(!isStop(word) && !isAllAlpha(word)){
-        Porter2Stemmer::stem(word);
-        //out << textHolder[k]<< endl;
-        cout << "word inserted: " << word << endl;
-        hashObj[word].push_back(id);
-    }
+    return ret;
 }
 
 vector<string> Parser::removeExtraCharacters(vector<string> &wordList)

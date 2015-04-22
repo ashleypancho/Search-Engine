@@ -8,10 +8,7 @@ public:
     AVLTree();
 
     int height(AVLNode *t);
-    void insert(string &val)
-    {
-        insert(val, root);
-    }
+    void insert(string &val);
 //    http://www.sanfoundry.com/cpp-program-implement-avl-trees/
     void inorder(AVLNode *t);
     void print();

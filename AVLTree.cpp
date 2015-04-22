@@ -6,6 +6,11 @@ AVLTree::AVLTree()
     root = nullptr;
 }
 
+void AVLTree::insert(string &val)
+{
+    insert(val, root);
+}
+
 void AVLTree::insert(string &x, AVLNode *&t)
 {
     if(t==nullptr)
@@ -76,7 +81,7 @@ void AVLTree::inorder(AVLNode *t)
         if (t == nullptr)
             return;
         inorder(t->left);
-        cout<<t->SampleData<<"  ";
+        cout<<t->SampleData<<endl;
         inorder(t->right);
 }
 

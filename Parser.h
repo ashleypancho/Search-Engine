@@ -175,7 +175,7 @@ public:
     //
     //      void sendDocsToDocClass();      //send the document vector elements to doc class
     //      vector<string> createSplitVector(string);
-    void split(string& str, char sep);
+    vector<string> split(string& str, char sep);
     //      vector<string> sStreamText(string);
     void removeStop(vector<string> wordList);
     void removeSpace(vector<string> &fullDoc, vector<string> &noPunc);
