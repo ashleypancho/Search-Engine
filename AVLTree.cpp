@@ -14,27 +14,41 @@ void AVLTree::insert(string &val)
 void AVLTree::insert(string &x, AVLNode *&t)
 {
     if(t==nullptr)
+    {
         t = new AVLNode(x, nullptr, nullptr);
-    else if(x < t ->SampleData)
+    }
+    else if(x.compare(t->data) < 0)
     {
         insert(x, t->left);
         if(height(t->left)-height(t->right)==2)
-            if(x < t ->left->SampleData)//case I
+        {
+            if(x.compare(t ->left->data) < 0)//case I
+            {
                 rotateWithLC(t);
+            }
             else//case II
+            {
                 doubleWithLC(t);
+            }
+        }
     }
-    else if(t->SampleData < x)
+    else if((t->data).compare(x) < 0)
     {
         insert(x, t->right);
         if(height(t->right)-height(t->left)==2)
-            if(t->right->SampleData < x)
-                rotateWithRC(t);//case IV
+        {
+            if((t->right->data).compare(x) < 0)
+            {
+                rotateWithRC(t);
+            }//case IV
             else
-                doubleWithRC(t);//case III
+            {
+                doubleWithRC(t);
+            }
+        }//case III
     }
     else
-        ;
+        {}
     t->height = max(height(t->left), height(t->right))+1;
 }
 
@@ -81,12 +95,11 @@ void AVLTree::inorder(AVLNode *t)
         if (t == nullptr)
             return;
         inorder(t->left);
-        cout<<t->SampleData<<endl;
+        cout<<t->data<<endl;
         inorder(t->right);
 }
 
 void AVLTree::print()
 {
-    cout << "root: " << root->SampleData << endl;
-    cout << "root->left: " << root->left->SampleData << endl;
+    inorder(root);
 }

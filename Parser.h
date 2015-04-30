@@ -160,7 +160,7 @@ private:
     vector<Word*> wordVect;
     Document* docObj;
     Word* wordObj;
-    AVLTree* indObj;
+    AVLTree* indObj = new AVLTree();
     string text;
     string id;
 

@@ -132,6 +132,7 @@ void Parser::parse(string fileName)
                    //out << textHolder[k]<< endl;
                     cout << "word inserted: " << textHolder[k] << endl;
                     // hashObj[textHolder[k]].push_back(id);
+                    indObj->insert(textHolder[k]);
                     inserting = (clock() - start) / (double) CLOCKS_PER_SEC;
                     start = clock();
                    cout << "inserting: " << inserting << endl;
@@ -146,9 +147,9 @@ void Parser::parse(string fileName)
         }
         duration = (clock() - origStart) / (double) CLOCKS_PER_SEC;
         cout << "timer:" << duration << " seconds" << endl;
-        // indObj->print();
-        cout << "the first page \"light\" is on is page: " << hashObj["light"].at(0) << endl;
-        cout << "the first page \"second\" is on is page: " << hashObj["second"].at(0) << endl;
+        indObj->print();
+        // cout << "the first page \"light\" is on is page: " << hashObj["light"].at(0) << endl;
+        // cout << "the first page \"second\" is on is page: " << hashObj["second"].at(0) << endl;
 
         // for(auto i : hashObj) {
         //     cout << i.first << ": ";
