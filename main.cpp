@@ -7,8 +7,8 @@
 #include <fstream>
 #include <vector>
 
-#include "Parser.h"
-#include "Word.h"
+#include "QueryProcessor.h"
+// #include "Word.h"
 
 #include "rapidxml-1.13/rapidxml.hpp"
 #include "rapidxml-1.13/rapidxml_utils.hpp"
@@ -20,14 +20,8 @@ using namespace std;
 
 int main()
 {
-    string fileName;
-    //fileName = "enwikibooks-20131101-pages-meta-current.xml";
-    //fileName = "WikiDumpPart1.xml";
-    Parser par;//= new Parser();
-    //par.makeStopWords();
-    par.parse(fileName);
-    // par -> stemWords();
-
+    QueryProcessor search;
+    search.run();
 
     return 0;
 }

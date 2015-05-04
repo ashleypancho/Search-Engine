@@ -28,12 +28,11 @@ using namespace std;
 //     delete wordObj;
 // }
 
-void Parser::parse(string fileName)
+void Parser::parse(int indChoice)
 {
-    clock_t origStart, start;
-    double duration, parsing, inserting, clearing, stopTime, stemmer, cleaner;
+    clock_t origStart;
+    double duration;
     origStart = clock();
-    start = clock();
 
     vector<string> documentVectTemp;
     string bufferString;
@@ -52,8 +51,6 @@ void Parser::parse(string fileName)
 
     buffer.push_back('\0');
 
-//    cout<<&buffer[0]<<endl; /*test the buffer */
-
     doc.parse<0>(&buffer[0]);
     root_node = doc.first_node("mediawiki");
 
@@ -67,7 +64,8 @@ void Parser::parse(string fileName)
             cNode = cNode->next_sibling("id");
             bufferString = cNode->value();
             id = bufferString;
-            // documentVectTemp.push_back(bufferString);                 //add the page number to document vector
+            documentVectTemp.push_back(bufferString);                 //add the page number to document vector
+
             cNode = cNode->next_sibling("revision");
             cNode = cNode->first_node("id");
             if(cNode->next_sibling("parentid"))
@@ -84,82 +82,72 @@ void Parser::parse(string fileName)
             {
                 cNode = cNode->first_node("ip");
             }
+
             cNode = cNode->parent();
+
             if(cNode->next_sibling("comment"))
                 cNode = cNode->next_sibling("comment");
             cNode = cNode->next_sibling("text");
             bufferString = cNode->value();
-            // documentVectTemp.push_back(bufferString);                 //add the text
-        //   documentVectTemp = removeExtraCharacters(documentVectTemp);
+
+            documentVectTemp.push_back(bufferString);                 //add the text
+            documentVectTemp = removeExtraCharacters(documentVectTemp);
+
             cNode = cNode->next_sibling("sha1");
             cNode = cNode->next_sibling("model");
             cNode = cNode->next_sibling("format");
             cNode = cNode->parent();
             cNode = cNode->parent();
-//
-            // Document* docObj = new Document(documentVectTemp);
-//
+
+            Document* docObj = new Document(documentVectTemp);
+
             //loop through the bufferString of text. parse each word. add to index
             //Word pointer
             textHolder = split(bufferString,' ');
-            parsing = (clock() - start) / (double) CLOCKS_PER_SEC;
-            start = clock();
-           cout << "parsing: " << parsing << endl;
-        //     // removeSpace(textHolder,cleanTextHolder);
-        //     cleaner = (clock() - start) / (double) CLOCKS_PER_SEC;
-        //     start = clock();
-        //    cout << "cleaner: " << cleaner << endl;
+
             removeStop(textHolder);
-            stopTime = (clock() - start) / (double) CLOCKS_PER_SEC;
-            start = clock();
-           cout << "stopTime: " << stopTime << endl;
-           for(int k = 0; k < textHolder.size(); k++)
-           {
-            //    Porter2Stemmer::stem(noStopText[k]);
+            removeSpace(textHolder);
 
+            // Stem and insert into index
+            for(int k = 0; k < textHolder.size(); k++)
+            {
             //    Word* wordObj = new Word(noStopText[k],docObj);
-            //    if(k%10000 == 0) {
-            //        wordObj->print();
-            //        cout << endl;
-            //    }
-            //   indObj->insert(noStopText[k]);
-
-                if(isAllAlpha(textHolder[k]))
-                {
-                    Porter2Stemmer::stem(textHolder[k]);
-                   stemmer = (clock() - start) / (double) CLOCKS_PER_SEC;
-                   start = clock();
-                   //out << textHolder[k]<< endl;
-                    cout << "word inserted: " << textHolder[k] << endl;
-                    // hashObj[textHolder[k]].push_back(id);
-                    indObj->insert(textHolder[k]);
-                    inserting = (clock() - start) / (double) CLOCKS_PER_SEC;
-                    start = clock();
-                   cout << "inserting: " << inserting << endl;
-                }
-                // cout << hashObj[noStopText[k]];
+               if(isAllAlpha(textHolder[k]))
+               {
+                   Porter2Stemmer::stem(textHolder[k]);
+                   cout << "word inserted: " << textHolder[k] << endl;
+                   if(indChoice == 1)
+                   {
+                       indObj->insert(textHolder[k]);
+                   }
+                   if(indChoice == 2)
+                   {
+                       hashObj[textHolder[k]].push_back(id);
+                   }
+               }
            }
 
             documentVectTemp.clear();
             textHolder.clear();
-            clearing = (clock() - start) / (double) CLOCKS_PER_SEC;
-            cout << "clearing: " << clearing << endl;
         }
-        duration = (clock() - origStart) / (double) CLOCKS_PER_SEC;
-        cout << "timer:" << duration << " seconds" << endl;
-        indObj->print();
-        // cout << "the first page \"light\" is on is page: " << hashObj["light"].at(0) << endl;
-        // cout << "the first page \"second\" is on is page: " << hashObj["second"].at(0) << endl;
 
-        // for(auto i : hashObj) {
-        //     cout << i.first << ": ";
-        //     for(int j = 0; j < (i.second).size(); j++) {
-        //         cout << (i.second).at(j);
-        //         if(j != ((i.second).size() -1))
-        //             cout << ", ";
-        //     }
-        //     cout << endl;
-        // }
+        duration = (clock() - origStart) / (double) CLOCKS_PER_SEC;
+        // Prints Index
+        if(indChoice == 1)
+            indObj->print();
+        if(indChoice == 2)
+        {
+            for(auto i : hashObj) {
+                cout << i.first << ": ";
+                for(int j = 0; j < (i.second).size(); j++) {
+                    cout << (i.second).at(j);
+                    if(j != ((i.second).size() -1))
+                        cout << ", ";
+                }
+                cout << endl;
+            }
+        }
+        cout << endl << "timer:" << duration << " seconds" << endl;
 }
 
 // split via http://www.cplusplus.com/forum/general/125094/
@@ -180,7 +168,7 @@ vector<string> Parser::removeExtraCharacters(vector<string> &wordList)
     for(int k = 0; k < wordList.size(); k++)
     {
         s = wordList[k];
-        s.erase(std::remove_if(s.begin(), s.end(), [](const unsigned &c){ return !isalpha(c);}), s.end());    //removes other characters
+        s.erase(std::remove_if(s.begin(), s.end(), [](const unsigned &c){ return isalpha(c);}), s.end());    //removes other characters
         wordList[k] = s;
     }
     return wordList;
@@ -204,32 +192,19 @@ bool Parser::isStop(string str)
     return search == stopWords.end();
 }
 
-void Parser::removeStop(vector<string> wordList) {
+void Parser::removeStop(vector<string>& wordList) {
     vector<string> noStop;
     for(int i = 0; i < wordList.size(); i++) {
         auto search = stopWords.find(wordList[i]);
         if(search == stopWords.end()) {
             noStop.push_back(wordList[i]);
         }
-    }
-    wordList.swap(noStop);
-
-    // vector<string> noStop;
-    // for (int i = 0; i < wordList.size(); i++) {
-    //     string word = wordList[i];
-    //     int count = 0;
-    //     for (int m = 0; m < stopWords.size(); m++) {
-    //         string stop = stopWords[m];
-    //         if (word == stop)
-    //             count++;
-    //     }
-    //     if (count == 0) {
-    //         noStop.push_back(word);
-    //     }
-    // }
+   }
+   wordList.swap(noStop);
 }
 
-void Parser::removeSpace(vector<string> &fullDoc, vector<string> &noPunc) {
+void Parser::removeSpace(vector<string> &fullDoc) {
+    vector<string> noPunc;
     for (int i = 0; i < fullDoc.size(); i++) {
         string line = fullDoc[i];
         stringstream lineStream(line);
@@ -239,4 +214,5 @@ void Parser::removeSpace(vector<string> &fullDoc, vector<string> &noPunc) {
             noPunc.push_back(word);
         }
     }
+    fullDoc.swap(noPunc);
 }

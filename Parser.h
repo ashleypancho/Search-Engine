@@ -31,6 +31,7 @@ private:
     string textToken;
     int pageIDNumber;
     unordered_map<string, vector<string>> hashObj;
+    //Stop words list
     unordered_map<string, string> stopWords = {{"a","a"},
         {"about","about"},
         {"above","above"},
@@ -168,17 +169,10 @@ public:
 //    Parser();
     // ~Parser();
     vector<string> removeExtraCharacters(vector<string>&);             //remove spaces, puctuation...
-    void parse(string fileName);
-    // void stemWords();
-    // void sendToIndex();
-    //
-    //
-    //      void sendDocsToDocClass();      //send the document vector elements to doc class
-    //      vector<string> createSplitVector(string);
+    void parse(int indChoice);
     vector<string> split(string& str, char sep);
-    //      vector<string> sStreamText(string);
-    void removeStop(vector<string> wordList);
-    void removeSpace(vector<string> &fullDoc, vector<string> &noPunc);
+    void removeStop(vector<string>& wordList);
+    void removeSpace(vector<string> &fullDoc);
     bool isAllAlpha(string word);
     bool isStop(string str);
     void processText(string &word);

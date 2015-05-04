@@ -11,7 +11,7 @@ Document::Document(vector<string>& singleDoc)
     if(singleDoc.size() == 2)
     {
         pageNumber = singleDoc[0];
-        text = singleDoc[2];
+        text = singleDoc[1];
     }
 }
 
