@@ -30,7 +30,7 @@ private:
     string timeStamp;
     string textToken;
     int pageIDNumber;
-    unordered_map<string, vector<string>> hashObj;
+    unordered_map<string, vector<Document*>> hashObj;
     //Stop words list
     unordered_map<string, string> stopWords = {{"a","a"},
         {"about","about"},
@@ -176,6 +176,7 @@ public:
     bool isAllAlpha(string word);
     bool isStop(string str);
     void processText(string &word);
+    vector<Document*> search(string& word);
 };
 
 #endif // PARSER_H

@@ -6,6 +6,8 @@
 
 #include <sstream>
 #include "Parser.h"
+#include "Document.h"
+#include "Word.h"
 
 using namespace std;
 
@@ -38,14 +40,11 @@ public:
  */
     void removeNot(vector<Document>&, stringstream&);
 
-/*  limits search results to dates less than the indicated
- *  date values
- */
-    void removeDateLT(vector<Document>&, stringstream&);
-
     virtual ~QueryProcessor();
 private:
+    Parser par;
     int totalDocs;
+    int choice;
 };
 
 #endif  /* QUERYPROCESSOR_H */

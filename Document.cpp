@@ -8,10 +8,11 @@
 
 Document::Document(vector<string>& singleDoc)
 {
-    if(singleDoc.size() == 2)
+    if(singleDoc.size() == 3)
     {
-        pageNumber = singleDoc[0];
-        text = singleDoc[1];
+        docTitle = singleDoc[0];
+        pageNumber = singleDoc[1];
+        text = singleDoc[2];
     }
 }
 
@@ -21,7 +22,7 @@ Document::Document(vector<string>& singleDoc)
 // }
 
 int Document::search(string word){
-    int frequency;
+    int frequency = 0;
     size_t found = text.find(word);
     while(found != string::npos) {
         frequency++;

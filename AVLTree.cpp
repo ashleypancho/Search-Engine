@@ -6,8 +6,20 @@ AVLTree::AVLTree()
     root = nullptr;
 }
 
-void AVLTree::insert(string &val)
+void AVLTree::insert(string &val)//, Word*w, Document*doc)
 {
+    // bool wordFound = false;
+    // for(int i = 0; i < words.size(); i++) {
+    //     if(w == words[i]){
+    //         words[i].addDocument(doc);
+    //         wordFound = true;
+    //         break;
+    //     }
+    // }
+    // if(!wordFound) {
+    //     words.push_back(w);
+    // }
+    //
     insert(val, root);
 }
 
@@ -95,7 +107,7 @@ void AVLTree::inorder(AVLNode *t)
         if (t == nullptr)
             return;
         inorder(t->left);
-        cout<<t->data<<endl;
+        cout << t->data << endl;
         inorder(t->right);
 }
 
@@ -103,3 +115,18 @@ void AVLTree::print()
 {
     inorder(root);
 }
+
+// vector<Word*> AVLTree::search(string& word)
+// {
+//     vector<Word*> results;
+//     search(word, results, root);
+// }
+//
+// vector<Word*> AVLTree::search(string& word, vector<Word*> results, AVLNode *t)
+// {
+//     if (t == nullptr)
+//         return results;
+//     search(word, results, t->left);
+//     if(word == )
+//     search(word, results, t->right);
+// }

@@ -52,7 +52,6 @@ void Word::print()
 {
     cout << "Word: " << theWord << endl;
     for(int i = 0; i < 5; i++) {
-//        cout << "hi" << endl;
         cout << docs[i] << endl;
     }
 }

@@ -39,8 +39,8 @@ void Parser::parse(int indChoice)
 
     vector<string> textHolder;
 
-    //ifstream myfile("enwikibooks-20140502-pages-meta-current.xml");
-    ifstream myfile("WikiDumpPart1.xml");
+    ifstream myfile("enwikibooks-20140502-pages-meta-current.xml");
+    //ifstream myfile("WikiDumpPart1.xml");
     //ofstream out("output.txt");
 
     //http://stackoverflow.com/questions/2808022/how-to-parse-the-xml-file-in-rapidxml
@@ -54,12 +54,15 @@ void Parser::parse(int indChoice)
     doc.parse<0>(&buffer[0]);
     root_node = doc.first_node("mediawiki");
 
+    /* Parses the dataset and pushes to the DOM Tree
+     * using Rapidxml functionality ****************/
     for(xml_node<> *cNode = root_node -> first_node("page"); cNode; cNode = cNode -> next_sibling("page"))
         {
 
             cNode = cNode->first_node("title");
-            // buffer = cNode->value();
-            // documentVectTemp.push_back(buffer);                 //add the title to doc vect
+            bufferString = cNode->value();
+            documentVectTemp.push_back(bufferString);                 //add the title to doc vect
+
             cNode = cNode->next_sibling("ns");
             cNode = cNode->next_sibling("id");
             bufferString = cNode->value();
@@ -91,7 +94,7 @@ void Parser::parse(int indChoice)
             bufferString = cNode->value();
 
             documentVectTemp.push_back(bufferString);                 //add the text
-            documentVectTemp = removeExtraCharacters(documentVectTemp);
+            // documentVectTemp = removeExtraCharacters(documentVectTemp);
 
             cNode = cNode->next_sibling("sha1");
             cNode = cNode->next_sibling("model");
@@ -115,14 +118,13 @@ void Parser::parse(int indChoice)
                if(isAllAlpha(textHolder[k]))
                {
                    Porter2Stemmer::stem(textHolder[k]);
-                   cout << "word inserted: " << textHolder[k] << endl;
                    if(indChoice == 1)
                    {
                        indObj->insert(textHolder[k]);
                    }
                    if(indChoice == 2)
                    {
-                       hashObj[textHolder[k]].push_back(id);
+                       hashObj[textHolder[k]].push_back(docObj);
                    }
                }
            }
@@ -133,23 +135,24 @@ void Parser::parse(int indChoice)
 
         duration = (clock() - origStart) / (double) CLOCKS_PER_SEC;
         // Prints Index
-        if(indChoice == 1)
-            indObj->print();
-        if(indChoice == 2)
-        {
-            for(auto i : hashObj) {
-                cout << i.first << ": ";
-                for(int j = 0; j < (i.second).size(); j++) {
-                    cout << (i.second).at(j);
-                    if(j != ((i.second).size() -1))
-                        cout << ", ";
-                }
-                cout << endl;
-            }
-        }
+        // if(indChoice == 1)
+        //     indObj->print();
+        // if(indChoice == 2)
+        // {
+        //     for(auto i : hashObj) {
+        //         cout << i.first << ": ";
+        //         for(int j = 0; j < (i.second).size(); j++) {
+        //             cout << (i.second).at(j);
+        //             if(j != ((i.second).size() -1))
+        //                 cout << ", ";
+        //         }
+        //         cout << endl;
+        //     }
+        // }
         cout << endl << "timer:" << duration << " seconds" << endl;
 }
 
+/* Splits the text from a document into multiple strings */
 // split via http://www.cplusplus.com/forum/general/125094/
 vector<string> Parser::split(string& str, char sep = ' ' )
 {
@@ -162,18 +165,24 @@ vector<string> Parser::split(string& str, char sep = ' ' )
     return ret;
 }
 
+
+/* Removes non alphanumeric characters */
 vector<string> Parser::removeExtraCharacters(vector<string> &wordList)
 {
     string s;
     for(int k = 0; k < wordList.size(); k++)
     {
         s = wordList[k];
-        s.erase(std::remove_if(s.begin(), s.end(), [](const unsigned &c){ return isalpha(c);}), s.end());    //removes other characters
+        s.erase(std::remove_if(s.begin(), s.end(), [](const unsigned &c){ return !isalpha(c);}), s.end());    //removes other characters
         wordList[k] = s;
     }
     return wordList;
 }
 
+/* Check to see whether anything in the string contains
+ * improper characters and removes characters that are
+ * not alphabetical including special characters and
+ * numeric characters */
 
 //modified from http://stackoverflow.com/questions/11302990/c-how-to-check-if-a-string-is-all-lowercase-and-alphanumerics
 static inline bool is_not_alphanum_lower(char c)
@@ -186,12 +195,16 @@ bool Parser::isAllAlpha(string str)
     return find_if(str.begin(), str.end(), is_not_alphanum_lower) == str.end();
 }
 
+/* Checks to see if a word is a stop word
+ * Returns a boolean value to be used in
+ * removing the stop words */
 bool Parser::isStop(string str)
 {
     auto search = stopWords.find(str);
     return search == stopWords.end();
 }
 
+/* Removes stop words */
 void Parser::removeStop(vector<string>& wordList) {
     vector<string> noStop;
     for(int i = 0; i < wordList.size(); i++) {
@@ -203,6 +216,8 @@ void Parser::removeStop(vector<string>& wordList) {
    wordList.swap(noStop);
 }
 
+
+/* Removes spaces in the string*/
 void Parser::removeSpace(vector<string> &fullDoc) {
     vector<string> noPunc;
     for (int i = 0; i < fullDoc.size(); i++) {
@@ -215,4 +230,9 @@ void Parser::removeSpace(vector<string> &fullDoc) {
         }
     }
     fullDoc.swap(noPunc);
+}
+
+vector<Document*> Parser::search(string& word) {
+    Porter2Stemmer::stem(word);
+    return hashObj[word];
 }
