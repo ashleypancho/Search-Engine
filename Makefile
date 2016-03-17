@@ -9,7 +9,7 @@ CXXFLAGS = -c -std=c++0x
 all 	 		: searchEngine
 
 searchEngine	: avltree.o document.o main.o parser.o queryprocessor.o porter2_stemmer.o word.o
-	${CXX} $^ ${CXXFLAGS} -o $@
+	${CXX} $^ ${CXXFLAGS} -o SearchEngine
 
 avltree.o : AVLTree.cpp
 	${CXX} $^ ${CXXFLAGS}
